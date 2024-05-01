@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+
+# Import Dependencies
+import rospy 
+from geometry_msgs.msg import Twist 
+import time 
+
+def move_turtle_square(): 
+    # Initialize ROS node
+    rospy.init_node('turtlesim_square_node', anonymous=True)
+    
+    # Initialize publisher for velocity commands
+    velocity_publisher = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size=10) 
+    rospy.loginfo("Turtle commands initiated.")
+
+    # Define movement commands
+    move_forward = Twist()
+    move_forward.linear.x = 1
+
+    move_left = Twist()
+    move_left.angular.z = 1
+
+    move_backward = Twist()
+    move_backward.linear.x = -1
+
+    move_right = Twist()
+    move_right.angular.z = -1
+
+    while not rospy.is_shutdown():
+        # Move forward
+        velocity_publisher.publish(move_forward)
+        time.sleep(1)
+
+        # Turn left
+        velocity_publisher.publish(move_left)
+        time.sleep(1)
+
+        # Move backward
+        velocity_publisher.publish(move_backward)
+        time.sleep(1)
+
+        # Turn right
+        velocity_publisher.publish(move_right)
+        time.sleep(1)
+
+    # Stop the turtle before exiting
+    stop_movement = Twist()
+    velocity_publisher.publish(stop_movement)
+
+if __name__ == '__main__': 
+    try: 
+        move_turtle_square() 
+    except rospy.ROSInterruptException: 
+        pass
